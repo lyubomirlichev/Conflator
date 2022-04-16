@@ -4,12 +4,28 @@ public class Core : MonoBehaviour
 {
     [SerializeField] private MainScreen mainScreen;
 
-    private APIConroller apiController;
+    private APIController apiController;
     
     private void Start()
     {
-        mainScreen.Init();
+        mainScreen.Init(OnGenerateClick);
+        mainScreen.OnFormulaSelected += OnFormulaSelected;
+        
+        apiController = new APIController();
+        apiController.Init(this);
 
-        apiController = new APIConroller();
+    }
+
+    private void OnGenerateClick()
+    {
+        apiController.GetKanyeResponse((result) =>
+            {
+                Debug.Log("success is: "+ result.quote);
+            });
+    }
+
+    private void OnFormulaSelected(Formula selection)
+    {
+        
     }
 }
