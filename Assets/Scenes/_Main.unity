@@ -1620,8 +1620,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   navigation: {fileID: 558396112}
-  content: {fileID: 1556509195}
   generateBtn: {fileID: 1147753688}
+  label: {fileID: 18377965}
+  image: {fileID: 285462424}
 --- !u!1 &1556509194
 GameObject:
   m_ObjectHideFlags: 0

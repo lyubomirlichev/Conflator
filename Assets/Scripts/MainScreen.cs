@@ -18,8 +18,9 @@ public class MainScreen : MonoBehaviour
     public Action<Formula> OnFormulaSelected;
     
     [SerializeField] private Transform navigation;
-    [SerializeField] private Transform content;
     [SerializeField] private Button generateBtn;
+    [SerializeField] private TextMeshProUGUI label;
+    [SerializeField] private Image image;
     
     public void Init(Action onGenerate)
     {
@@ -45,6 +46,12 @@ public class MainScreen : MonoBehaviour
 
     public void ApplyResults(string result)
     {
-        Debug.Log("result is: " + result);
+        label.SetText(result);
+    }
+
+    public void ApplyTexture(Texture2D texture2D)
+    {
+        var sprite = Sprite.Create(texture2D, new Rect(0, 0, texture2D.width, texture2D.height), new Vector2(0f, 0f));
+        image.sprite = sprite;
     }
 }
