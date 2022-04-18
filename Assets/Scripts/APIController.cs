@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using FullSerializer;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -10,11 +11,12 @@ public class APIController
     {
         public string quote;
     }
-    
-    public class CatData
+
+    public class CatResponse
     {
         public string url;
     }
+
     private MonoBehaviour host;
     int retryCount = 3;
 
@@ -22,33 +24,36 @@ public class APIController
     {
         host = mono;
     }
-
+    
     public void GetKanyeResponse(Action<KanyeResponse> success)
     {
         WaitForWebRequest<KanyeResponse>("https://api.kanye.rest/", success, (error) => { Debug.LogError("Failed to get API response."); });
     }
 
-    public void GetRandomCat(Action<CatData[]> success)
+    public void GetRandomCat(Action<CatResponse[]> success)
     {
-        WaitForWebRequest<CatData[]>("https://api.thecatapi.com/v1/images/search", success, (error) => { Debug.LogError("Failed to get API response."); });
+        WaitForWebRequest<CatResponse[]>("https://api.thecatapi.com/v1/images/search",
+            success,
+            (error) => { Debug.LogError("Failed to get API response."); });
     }
 
     public void GetCatTexture(string url, Action<Texture2D> success)
     {
-        WaitForDownload<Texture2D>(url, success,(error) => { Debug.LogError("Failed to get texture."); });
+        WaitForDownload<Texture2D>(url, success, (error) => { Debug.LogError("Failed to get texture."); });
     }
 
     private void WaitForDownload<T>(string url, Action<Texture2D> success, Action<string> error) where T : class
     {
         host.StartCoroutine(DownloadTexture<Texture2D>(url, success, error));
     }
+
     private void WaitForWebRequest<T>(string path, Action<T> success, Action<string> error) where T : class
     {
         host.StartCoroutine(SendRequest(path, success, error));
     }
-    
+
     private IEnumerator DownloadTexture<T>(string url, Action<Texture2D> success, Action<string> error) where T : class
-    {   
+    {
         float timeout = 0;
         retryCount = 3;
 
@@ -85,7 +90,7 @@ public class APIController
         {
             success?.Invoke(((DownloadHandlerTexture)unityWebRequest.downloadHandler).texture);
         }
-    } 
+    }
 
     private IEnumerator SendRequest<T>(string path, Action<T> success, Action<string> error) where T : class
     {
