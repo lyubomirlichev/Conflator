@@ -51,10 +51,10 @@ public class MainScreen : MonoBehaviour
         if (formulaTitle == "Kanye cats")
         {
             selection = Formula.KanyeCats;
+            
+            ToggleContainer(true);
+            OnFormulaSelected?.Invoke(selection);
         }
-        
-        ToggleContainer(true);
-        OnFormulaSelected?.Invoke(selection);
     }
 
     public void ApplyResults(string result)
