@@ -18,19 +18,19 @@ public class MainScreen : MonoBehaviour
 {
     public Action<Formula> OnFormulaSelected;
     public Action OnGenerate;
-    
+
     [SerializeField] private Transform navigation;
     [SerializeField] private Button generateBtn;
     [SerializeField] private TextMeshProUGUI label;
     [SerializeField] private Image image;
     [SerializeField] private CanvasGroup container;
-    
+
     public void Init()
     {
         foreach (Transform tile in navigation)
         {
             TextMeshProUGUI text = tile.GetComponentInChildren<TextMeshProUGUI>();
-            tile.GetComponent<Button>().onClick.AddListener(() => { SelectFormula(text.text); });
+            tile.GetComponent<Toggle>().onValueChanged.AddListener((value) => { SelectFormula(value, text.text); });
         }
 
         generateBtn.onClick.AddListener(() => { OnGenerate?.Invoke(); });
@@ -45,15 +45,18 @@ public class MainScreen : MonoBehaviour
         container.blocksRaycasts = state;
         container.interactable = state;
     }
-    private void SelectFormula(string formulaTitle)
+
+    private void SelectFormula(bool state, string formulaTitle)
     {
-        var selection = Formula.None;
-        if (formulaTitle == "Kanye cats")
+        if (state)
         {
-            selection = Formula.KanyeCats;
-            
-            ToggleContainer(true);
-            OnFormulaSelected?.Invoke(selection);
+            if (formulaTitle == "Kanye cats")
+            {
+                var selection = Formula.KanyeCats;
+
+                ToggleContainer(true);
+                OnFormulaSelected?.Invoke(selection);
+            }
         }
     }
 
