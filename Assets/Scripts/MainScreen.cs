@@ -29,7 +29,7 @@ public class MainScreen : MonoBehaviour
     {
         foreach (Transform tile in navigation)
         {
-            TextMeshProUGUI text = tile.GetComponentInChildren<TextMeshProUGUI>();
+            var text = tile.GetComponentInChildren<TextMeshProUGUI>();
             tile.GetComponent<Toggle>().onValueChanged.AddListener((value) => { SelectFormula(value, text.text); });
         }
 
@@ -53,8 +53,6 @@ public class MainScreen : MonoBehaviour
             if (formulaTitle == "Kanye cats")
             {
                 var selection = Formula.KanyeCats;
-
-                ToggleContainer(true);
                 OnFormulaSelected?.Invoke(selection);
             }
         }
@@ -69,6 +67,8 @@ public class MainScreen : MonoBehaviour
     {
         var sprite = Sprite.Create(texture2D, new Rect(0, 0, texture2D.width, texture2D.height), new Vector2(0f, 0f));
         image.sprite = sprite;
+        
+        ToggleContainer(true);
         image.gameObject.SetActive(true);
     }
 }

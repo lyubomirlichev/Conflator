@@ -1,40 +1,27 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using FullSerializer;
 using UnityEngine;
 using UnityEngine.Networking;
 
 public class APIController
 {
-    public class KanyeResponse
-    {
-        public string quote;
-    }
-
-    public class CatResponse
-    {
-        public string url;
-    }
-
     private MonoBehaviour host;
-    int retryCount = 3;
+    private int retryCount = 3;
 
     public void Init(MonoBehaviour mono)
     {
         host = mono;
     }
-    
+
     public void GetKanyeResponse(Action<KanyeResponse> success)
     {
-        WaitForWebRequest<KanyeResponse>("https://api.kanye.rest/", success, (error) => { Debug.LogError("Failed to get API response."); });
+        WaitForWebRequest<KanyeResponse>(APIDataSources.GET_KANYE_QUOTE, success, (error) => { Debug.LogError("Failed to get API response."); });
     }
 
     public void GetRandomCat(Action<CatResponse[]> success)
     {
-        WaitForWebRequest<CatResponse[]>("https://api.thecatapi.com/v1/images/search",
-            success,
-            (error) => { Debug.LogError("Failed to get API response."); });
+        WaitForWebRequest<CatResponse[]>(APIDataSources.GET_RANDOM_CAT, success, (error) => { Debug.LogError("Failed to get API response."); });
     }
 
     public void GetCatTexture(string url, Action<Texture2D> success)
