@@ -9,7 +9,7 @@ public enum Formula
 {
     None,
     KanyeCats,
-    WeatherPuns,
+    OwenWowson,
     MovieSnacks,
     FruitySoundtracks
 }
@@ -50,9 +50,17 @@ public class MainScreen : MonoBehaviour
     {
         if (state)
         {
+            Formula selection;
+            
             if (formulaTitle == "Kanye cats")
             {
-                var selection = Formula.KanyeCats;
+                selection = Formula.KanyeCats;
+                OnFormulaSelected?.Invoke(selection);
+            }
+
+            if (formulaTitle == "Owen Wowson")
+            {
+                selection = Formula.OwenWowson;
                 OnFormulaSelected?.Invoke(selection);
             }
         }
@@ -60,6 +68,8 @@ public class MainScreen : MonoBehaviour
 
     public void ApplyResults(string result)
     {
+        ToggleContainer(true);
+        
         label.SetText(result);
     }
 

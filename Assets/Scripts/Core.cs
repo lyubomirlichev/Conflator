@@ -33,7 +33,8 @@ public class Core : MonoBehaviour
             case Formula.KanyeCats:
                 GetKanyeCats();
                 break;
-            case Formula.WeatherPuns:
+            case Formula.OwenWowson:
+                GetOwenWilsonWow();
                 break;
             case Formula.MovieSnacks:
                 break;
@@ -44,17 +45,31 @@ public class Core : MonoBehaviour
 
     private void GetKanyeCats()
     {
-        apiController.GetKanyeResponse((result) =>
+        apiController.GetKanyeResponse(result =>
         {
             apiController.GetRandomCat(response =>
             {
-                apiController.GetCatTexture(response[0].url,
+                apiController.GetTexture(response[0].url,
                     (texture) =>
                     {
                         mainScreen.ApplyTexture(texture);  //some of the textures are just red, reason unknown
                         mainScreen.ApplyResults(result.quote);
                     });
             });
+        });
+    }
+
+    private void GetOwenWilsonWow()
+    {
+        apiController.GetRandomOwenQuote(result =>
+        {
+            apiController.GetTexture(result[0].poster,
+                (texture) =>
+                {
+                    //can do other stuff with video and audio
+                    mainScreen.ApplyTexture(texture);  //some of the textures are just red, reason unknown
+                    mainScreen.ApplyResults(result[0].full_line + "\n"+result[0].movie);
+                });
         });
     }
 }

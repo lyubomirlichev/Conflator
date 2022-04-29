@@ -23,8 +23,13 @@ public class APIController
     {
         WaitForWebRequest<CatResponse[]>(APIDataSources.GET_RANDOM_CAT, success, (error) => { Debug.LogError("Failed to get API response."); });
     }
-
-    public void GetCatTexture(string url, Action<Texture2D> success)
+    
+    public void GetRandomOwenQuote(Action<OwenWilsonResponse[]> success)
+    {
+        WaitForWebRequest<OwenWilsonResponse[]>(APIDataSources.GET_RANDOM_OWEN_QUOTE, success, (error) => { Debug.LogError("Failed to get API response."); });
+    }
+    
+    public void GetTexture(string url, Action<Texture2D> success)
     {
         WaitForDownload<Texture2D>(url, success, (error) => { Debug.LogError("Failed to get texture."); });
     }
