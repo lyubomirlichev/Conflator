@@ -25,6 +25,7 @@ public class MainScreen : MonoBehaviour
     [SerializeField] private Image image;
     [SerializeField] private CanvasGroup container;
 
+    [SerializeField] private Shader decalShader;
     public void Init()
     {
         foreach (Transform tile in navigation)
@@ -37,6 +38,7 @@ public class MainScreen : MonoBehaviour
 
         ToggleContainer(false);
         image.gameObject.SetActive(false);
+        
     }
 
     private void ToggleContainer(bool state)
