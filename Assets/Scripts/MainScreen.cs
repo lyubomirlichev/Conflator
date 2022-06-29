@@ -22,7 +22,7 @@ public class MainScreen : MonoBehaviour
     [SerializeField] private Transform navigation;
     [SerializeField] private Button generateBtn;
     [SerializeField] private TextMeshProUGUI label;
-    [SerializeField] private Image image;
+    [SerializeField] private Renderer imageRenderer;
     [SerializeField] private CanvasGroup container;
 
     [SerializeField] private Shader decalShader;
@@ -37,8 +37,11 @@ public class MainScreen : MonoBehaviour
         generateBtn.onClick.AddListener(() => { OnGenerate?.Invoke(); });
 
         ToggleContainer(false);
-        image.gameObject.SetActive(false);
+        imageRenderer.gameObject.SetActive(false);
         
+        //Testing out a specific shader
+        Material mat = new Material(decalShader);
+        imageRenderer.material = mat;
     }
 
     private void ToggleContainer(bool state)
@@ -77,10 +80,79 @@ public class MainScreen : MonoBehaviour
 
     public void ApplyTexture(Texture2D texture2D)
     {
-        var sprite = Sprite.Create(texture2D, new Rect(0, 0, texture2D.width, texture2D.height), new Vector2(0f, 0f));
-        image.sprite = sprite;
-        
         ToggleContainer(true);
-        image.gameObject.SetActive(true);
+        imageRenderer.gameObject.SetActive(true);
+
+        UpdateQuadTexture(texture2D);
+    }
+
+    private void UpdateQuadTexture(Texture2D texture2D)
+    {
+        imageRenderer.material.SetTexture("_DecalTexture",texture2D);
+        SetQuadWidth(texture2D);
+    }
+    private void SetQuadWidth(Texture texture)
+    {
+        var bounds = CalculateRendererBounds(imageRenderer.gameObject);
+        Vector2 meshSize = bounds.size;
+        var ratio = GetNormalisedTiling(texture,meshSize);
+        var offset = GetRatioOffset(ratio);
+
+        var mat = imageRenderer.material;
+            
+        mat.SetVector("_DecalTiling",ratio);
+        mat.SetVector("_DecalOffset",offset);
+        
+    }
+    private Bounds CalculateRendererBounds(GameObject holder)
+    {
+        Quaternion currentRotation = holder.transform.rotation;
+        holder.transform.rotation = Quaternion.identity;
+        Bounds calculatedBounds = new Bounds(holder.transform.position, Vector3.zero);
+        MeshRenderer[] meshRenderers = holder.GetComponentsInChildren<MeshRenderer>();
+        if (meshRenderers != null && meshRenderers.Length > 0)
+        {
+            for (int i = 0; i < meshRenderers.Length; i++)
+            {
+                calculatedBounds.Encapsulate(meshRenderers[i].bounds);
+            }
+        }
+        Vector3 localCenter = calculatedBounds.center - holder.transform.position;
+        calculatedBounds.center = localCenter;
+        holder.transform.rotation = currentRotation;
+        return calculatedBounds;
+    }
+    private Vector2 GetNormalisedTiling(Texture texture, Vector2 meshBounds)
+    {
+        var ratio = Vector2.zero;
+        
+        ratio.x = texture.width / meshBounds.x;
+        ratio.y = texture.height / meshBounds.y;
+
+        if (ratio.x < ratio.y)
+        {
+            ratio.y = ratio.y / ratio.x;
+            ratio.x = ratio.x / ratio.x;
+        }
+        else
+        {
+            ratio.x = ratio.x / ratio.y;
+            ratio.y = ratio.y / ratio.y;
+        }
+
+        var x = ratio.x;
+        ratio.x = ratio.y;
+        ratio.y = x;
+        
+        return ratio;
+    }
+    Vector2 GetRatioOffset(Vector2 ratio)
+    {
+        var offset = Vector2.zero;
+
+        offset.x = (ratio.x-1) / 2;
+        offset.y = (ratio.y-1) / 2;
+        
+        return -offset;
     }
 }
